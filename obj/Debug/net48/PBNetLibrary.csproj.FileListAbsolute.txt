@@ -1,0 +1,12 @@
+/Users/mac/PBNetLibrary/bin/Debug/net48/PBNetLibrary.dll
+/Users/mac/PBNetLibrary/bin/Debug/net48/PBNetLibrary.pdb
+/Users/mac/PBNetLibrary/bin/Debug/net48/QRCoder.dll
+/Users/mac/PBNetLibrary/bin/Debug/net48/System.Drawing.Common.dll
+/Users/mac/PBNetLibrary/obj/Debug/net48/PBNetLibrary.csproj.AssemblyReference.cache
+/Users/mac/PBNetLibrary/obj/Debug/net48/PBNetLibrary.GeneratedMSBuildEditorConfig.editorconfig
+/Users/mac/PBNetLibrary/obj/Debug/net48/PBNetLibrary.AssemblyInfoInputs.cache
+/Users/mac/PBNetLibrary/obj/Debug/net48/PBNetLibrary.AssemblyInfo.cs
+/Users/mac/PBNetLibrary/obj/Debug/net48/PBNetLibrary.csproj.CoreCompileInputs.cache
+/Users/mac/PBNetLibrary/obj/Debug/net48/PBNetLib.4BCA7108.Up2Date
+/Users/mac/PBNetLibrary/obj/Debug/net48/PBNetLibrary.dll
+/Users/mac/PBNetLibrary/obj/Debug/net48/PBNetLibrary.pdb

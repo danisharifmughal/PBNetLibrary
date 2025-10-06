@@ -1,0 +1,120 @@
+// PowerBuilder 2021 - .NET Framework 4.8 Library Integration (Instance Class Approach)
+// QR Code Generator Library - .NET Assembly Import
+
+// .NET ASSEMBLY APPROACH: Standard PowerBuilder .NET Integration
+// Step 1: Copy these files to your PowerBuilder application directory:
+//   - PBNetLibrary.dll (from bin/Release/net48/)
+//   - QRCoder.dll
+//   - System.Drawing.Common.dll
+//   Requirements: .NET Framework 4.8 (standard on Windows 10/11)
+
+// Step 2: Import .NET Assembly in PowerBuilder IDE:
+//   - Right-click in your application 
+//   - Choose "Import .NET Assembly"
+//   - Browse and select PBNetLibrary.dll
+//   - PowerBuilder will create the proxy objects automatically
+
+// Step 3: Use the .NET object in your PowerBuilder code:
+
+// POWERBUILDER USAGE EXAMPLES:
+
+// Example 1: Generate QR Code with logo
+/*
+PBQRCodeLib_QRHelper lo_qrhelper
+long ll_result
+string ls_text, ls_qrpath, ls_logopath
+
+// Create the .NET object
+lo_qrhelper = CREATE PBQRCodeLib_QRHelper
+
+ls_text = "https://www.example.com"
+ls_qrpath = "C:\temp\myqr.png"
+ls_logopath = "C:\temp\logo.png"
+
+ll_result = lo_qrhelper.GenerateQRCode(ls_text, ls_qrpath, ls_logopath)
+
+IF ll_result = 1 THEN
+    MessageBox("Success", "QR Code with logo generated!")
+ELSE
+    MessageBox("Error", "Failed to generate QR Code")
+END IF
+
+// Clean up
+DESTROY lo_qrhelper
+*/
+
+// Example 2: Generate simple QR Code (no logo)
+/*
+PBQRCodeLib_QRHelper lo_qrhelper
+long ll_result
+string ls_text, ls_qrpath
+
+// Create the .NET object
+lo_qrhelper = CREATE PBQRCodeLib_QRHelper
+
+ls_text = "Hello PowerBuilder!"
+ls_qrpath = "C:\temp\simple_qr.png"
+
+ll_result = lo_qrhelper.GenerateSimpleQRCode(ls_text, ls_qrpath)
+
+IF ll_result = 1 THEN
+    MessageBox("Success", "Simple QR Code generated!")
+ELSE  
+    MessageBox("Error", "Failed to generate QR Code")
+END IF
+
+// Clean up
+DESTROY lo_qrhelper
+*/
+
+// WHY THIS INSTANCE CLASS APPROACH WORKS:
+// ✅ Standard .NET Assembly Import (PowerBuilder's strength)
+// ✅ No COM registration (regasm) needed  
+// ✅ Instance methods work perfectly with PowerBuilder
+// ✅ .NET Framework 4.8 - excellent PowerBuilder compatibility
+// ✅ Standard PowerBuilder .NET object creation pattern
+// ✅ Clean and maintainable code structure
+
+// Function Signatures:
+// int GenerateQRCode(string text, string qrPath, string logoPath)
+//   - Returns 1 for success, 0 for failure
+//   - text: The text/URL to encode in QR code
+//   - qrPath: Full path where to save the QR code PNG file
+//   - logoPath: Full path to logo image file (can be empty string)
+
+// int GenerateSimpleQRCode(string text, string qrPath)  
+//   - Returns 1 for success, 0 for failure
+//   - text: The text/URL to encode in QR code
+//   - qrPath: Full path where to save the QR code PNG file
+
+// Notes:
+// - Make sure all file paths use backslashes (\) on Windows
+// - The logo image should be reasonably small (it will be resized to 20% of QR code size)
+// - Supported logo formats: PNG, JPG, BMP, GIF
+// - The generated QR code will always be in PNG format
+// - Error correction level is set to Q (25% recovery)
+
+// Function Specifications:
+// GenerateQRCode(text, qrPath, logoPath)
+//   - text: String - Text/URL to encode in QR code
+//   - qrPath: String - Full path where to save QR code PNG file
+//   - logoPath: String - Full path to logo image (can be empty string "")
+//   - Returns: Long - 1 for success, 0 for failure
+
+// GenerateSimpleQRCode(text, qrPath)
+//   - text: String - Text/URL to encode in QR code  
+//   - qrPath: String - Full path where to save QR code PNG file
+//   - Returns: Long - 1 for success, 0 for failure
+
+// Troubleshooting:
+// - Ensure .NET Framework 4.8 is installed (standard on Windows 10/11)
+// - Copy all 3 DLL files to your PowerBuilder app directory
+// - If import fails, check PowerBuilder's "Imported .NET Assemblies" in System Tree
+// - Try rebuilding your PowerBuilder application after importing
+// - The class name in PowerBuilder will be: PBQRCodeLib_QRHelper
+
+// Technical Notes:
+// - Uses .NET Framework 4.8 for maximum PowerBuilder compatibility
+// - Instance class approach works perfectly with PowerBuilder object creation
+// - Uses QRCoder 1.4.3 and System.Drawing.Common 5.0.3
+// - No static methods - all instance methods for PowerBuilder compatibility

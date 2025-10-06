@@ -1,0 +1,13 @@
+{
+  "version": 2,
+  "dgSpecHash": "Ddpp9ZyzOM4=",
+  "success": true,
+  "projectFilePath": "/Users/mac/PBNetLibrary/PBNetLibrary.csproj",
+  "expectedPackageFiles": [
+    "/Users/mac/.nuget/packages/microsoft.netframework.referenceassemblies/1.0.3/microsoft.netframework.referenceassemblies.1.0.3.nupkg.sha512",
+    "/Users/mac/.nuget/packages/microsoft.netframework.referenceassemblies.net48/1.0.3/microsoft.netframework.referenceassemblies.net48.1.0.3.nupkg.sha512",
+    "/Users/mac/.nuget/packages/qrcoder/1.4.3/qrcoder.1.4.3.nupkg.sha512",
+    "/Users/mac/.nuget/packages/system.drawing.common/5.0.3/system.drawing.common.5.0.3.nupkg.sha512"
+  ],
+  "logs": []
+}
