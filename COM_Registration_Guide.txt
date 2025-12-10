@@ -1,0 +1,102 @@
+COM REGISTRATION GUIDE FOR POWERBUILDER
+========================================
+
+Your SendEmail library is now COM-visible and ready to be used in PowerBuilder.
+
+CLASS GUIDs:
+-----------
+SendEmail (Main):         A1B2C3D4-E5F6-4A5B-8C9D-0E1F2A3B4C5D
+SmtpConfiguration:        B2C3D4E5-F6A7-4B6C-9D0E-1F2A3B4C5D6E
+EmailRecipient:           C3D4E5F6-A7B8-4C7D-0E1F-2A3B4C5D6E7F
+EmailResult:              D4E5F6A7-B8C9-4D8E-1F2A-3B4C5D6E7F8A
+EmailService:             E5F6A7B8-C9D0-4E9F-2A3B-4C5D6E7F8A9B
+
+WINDOWS REGISTRATION STEPS:
+--------------------------
+1. Copy the entire bin/Debug/net48 folder to your Windows machine
+
+2. Open Command Prompt as Administrator
+
+3. Navigate to the folder containing PBNetLibrary.dll
+
+4. Register the DLL using RegAsm:
+   C:\Windows\Microsoft.NET\Framework\v4.0.30319\RegAsm.exe PBNetLibrary.dll /codebase /tlb
+
+   Note: Use Framework (not Framework64) for 32-bit PowerBuilder
+         Use Framework64 for 64-bit PowerBuilder
+
+5. Verify registration by checking Windows Registry:
+   HKEY_CLASSES_ROOT\PBNetLibrary.SendEmail.EmailService
+
+
+POWERBUILDER USAGE EXAMPLE:
+---------------------------
+// Declare OLE Object
+OleObject loo_EmailService
+OleObject loo_Config
+OleObject loo_Recipient
+OleObject loo_Recipients
+OleObject loo_Result
+
+// Create instances
+loo_EmailService = CREATE OleObject
+loo_Config = CREATE OleObject
+loo_Recipient = CREATE OleObject
+
+// Connect to COM objects
+loo_EmailService.ConnectToNewObject("PBNetLibrary.SendEmail.EmailService")
+loo_Config.ConnectToNewObject("PBNetLibrary.SendEmail.SmtpConfiguration")
+loo_Recipient.ConnectToNewObject("PBNetLibrary.SendEmail.EmailRecipient")
+
+// Configure SMTP settings
+loo_Config.SmtpServer = "smtp.gmail.com"
+loo_Config.Port = 587
+loo_Config.Username = "your-email@gmail.com"
+loo_Config.Password = "your-app-password"
+loo_Config.SenderName = "Your Name"
+loo_Config.SenderEmail = "your-email@gmail.com"
+
+// Create recipient list (you'll need to create a .NET List)
+// Note: For simplicity, you might want to create a wrapper method that accepts arrays
+
+// Set recipient details
+loo_Recipient.Email = "recipient@example.com"
+loo_Recipient.Name = "Recipient Name"
+
+// Send email (simplified - you may need to modify the method to accept individual recipients)
+// The current implementation expects List<EmailRecipient> which is complex from PowerBuilder
+// Consider creating a simplified wrapper method
+
+// Clean up
+DESTROY loo_EmailService
+DESTROY loo_Config
+DESTROY loo_Recipient
+
+
+RECOMMENDED: CREATE A SIMPLIFIED WRAPPER
+----------------------------------------
+For easier PowerBuilder integration, consider creating a simplified wrapper class
+with methods like:
+
+public bool SendSimpleEmail(
+    string smtpServer,
+    int port,
+    string username,
+    string password,
+    string senderName,
+    string senderEmail,
+    string recipientEmail,
+    string recipientName,
+    string subject,
+    string body)
+
+This would be much easier to call from PowerBuilder.
+
+
+TROUBLESHOOTING:
+---------------
+1. If RegAsm fails, ensure .NET Framework 4.8 is installed
+2. Always run Command Prompt as Administrator
+3. Use /codebase flag to register from non-GAC location
+4. Check Event Viewer for registration errors
+5. Ensure all dependencies (MailKit, MimeKit DLLs) are in the same folder

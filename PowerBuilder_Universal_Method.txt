@@ -1,0 +1,375 @@
+POWERBUILDER - UNIFIED EMAIL METHOD
+====================================
+
+ONE METHOD FOR EVERYTHING!
+-------------------------
+The SendEmail class now has ONE universal method that handles ALL cases:
+- Send() - Does everything!
+
+Class Name: PBNetLibrary.SendEmail
+COM GUID: A1B2C3D4-E5F6-4A5B-8C9D-0E1F2A3B4C5D
+
+
+UNIVERSAL Send() METHOD
+-----------------------
+
+Syntax:
+integer Send(
+    string smtpServer,
+    int port,
+    string username,
+    string password,
+    string senderName,
+    string senderEmail,
+    string toEmails,          // Single or multiple (semicolon-separated)
+    string ccEmails,          // Single or multiple (semicolon-separated) or ""
+    string bccEmails,         // Single or multiple (semicolon-separated) or ""
+    string subject,
+    string body,              // Plain text or HTML (auto-detected)
+    string attachmentPaths    // Single or multiple (semicolon-separated) or ""
+)
+
+Returns: 1 = Success, 0 = Failed
+
+
+HELPER METHODS
+--------------
+- GetLogFilePath() - Returns the full path to the log file
+- GetDetailedLog() - Returns the complete log as a string
+- GetLastError() - Returns only the last error message
+- ClearLog() - Clears the current log
+
+Log files are automatically created in Windows TEMP directory:
+C:\Users\YourUsername\AppData\Local\Temp\PB_Email_YYYYMMDD_HHMMSS.log
+
+
+EXAMPLES
+--------
+
+Example 1: Simple Email (Plain Text)
+-------------------------------------
+OleObject loo_Email
+integer li_Result
+
+loo_Email = CREATE OleObject
+loo_Email.ConnectToNewObject("PBNetLibrary.SendEmail")
+
+li_Result = loo_Email.Send( &
+    "smtp.gmail.com", &
+    587, &
+    "your-email@gmail.com", &
+    "your-app-password", &
+    "Your Name", &
+    "your-email@gmail.com", &
+    "recipient@example.com", &     // TO
+    "", &                          // CC (empty)
+    "", &                          // BCC (empty)
+    "Test Subject", &
+    "This is plain text body", &
+    "" &                           // Attachments (empty)
+)
+
+IF li_Result = 1 THEN
+    MessageBox("Success", "Email sent!")
+ELSE
+    MessageBox("Error", loo_Email.GetLastError())
+END IF
+
+DESTROY loo_Email
+
+
+Example 2: HTML Email with Attachment
+--------------------------------------
+string ls_HtmlBody
+
+ls_HtmlBody = "<html><body>"
+ls_HtmlBody += "<h1>Welcome!</h1>"
+ls_HtmlBody += "<p>This is <strong>HTML</strong> email.</p>"
+ls_HtmlBody += "</body></html>"
+
+li_Result = loo_Email.Send( &
+    "smtp.gmail.com", 587, &
+    "your-email@gmail.com", "your-app-password", &
+    "Your Name", "your-email@gmail.com", &
+    "recipient@example.com", &        // TO
+    "", &                             // CC
+    "", &                             // BCC
+    "HTML Email Test", &
+    ls_HtmlBody, &                    // HTML body (auto-detected)
+    "C:\Reports\report.pdf" &         // Single attachment
+)
+
+
+Example 3: Multiple Recipients (TO, CC, BCC)
+---------------------------------------------
+li_Result = loo_Email.Send( &
+    "smtp.gmail.com", 587, &
+    "your-email@gmail.com", "your-app-password", &
+    "Your Name", "your-email@gmail.com", &
+    "person1@test.com;person2@test.com", &           // Multiple TO (semicolon)
+    "cc1@test.com;cc2@test.com", &                   // Multiple CC
+    "bcc1@test.com", &                               // Single BCC
+    "Team Announcement", &
+    "Hello team, this is a group email.", &
+    "" &                                             // No attachments
+)
+
+
+Example 4: Multiple Attachments
+--------------------------------
+li_Result = loo_Email.Send( &
+    "smtp.gmail.com", 587, &
+    "your-email@gmail.com", "your-app-password", &
+    "Your Name", "your-email@gmail.com", &
+    "recipient@example.com", &
+    "", "", &
+    "Documents", &
+    "Please find attached documents.", &
+    "C:\file1.pdf;C:\file2.xlsx;C:\file3.docx" &    // Multiple attachments
+)
+
+
+Example 5: Everything Combined!
+--------------------------------
+li_Result = loo_Email.Send( &
+    "smtp.gmail.com", 587, &
+    "your-email@gmail.com", "your-app-password", &
+    "Your Name", "your-email@gmail.com", &
+    "to1@test.com;to2@test.com;to3@test.com", &     // Multiple TO
+    "cc1@test.com;cc2@test.com", &                  // Multiple CC
+    "bcc@test.com", &                               // Single BCC
+    "Monthly Report", &
+    "<h1>Report</h1><p>See attachments</p>", &      // HTML body
+    "C:\report.pdf;C:\data.xlsx" &                  // Multiple attachments
+)
+
+
+COMPLETE FUNCTION
+-----------------
+
+// Function: f_send_email_universal
+// All-in-one email function
+// Returns: boolean (true=success, false=failed)
+
+public function boolean f_send_email_universal ( &
+    string as_to, &
+    string as_cc, &
+    string as_bcc, &
+    string as_subject, &
+    string as_body, &
+    string as_attachments);
+
+OleObject loo_Email
+integer li_Result
+
+loo_Email = CREATE OleObject
+
+IF loo_Email.ConnectToNewObject("PBNetLibrary.SendEmail") <> 0 THEN
+    MessageBox("Error", "Failed to create email object")
+    RETURN FALSE
+END IF
+
+TRY
+    li_Result = loo_Email.Send( &
+        "smtp.gmail.com", &
+        587, &
+        "your-email@gmail.com", &
+        "your-app-password", &
+        "Company Name", &
+        "your-email@gmail.com", &
+        as_to, &
+        as_cc, &
+        as_bcc, &
+        as_subject, &
+        as_body, &
+        as_attachments &
+    )
+    
+    IF li_Result = 1 THEN
+        // Success
+        RETURN TRUE
+    ELSE
+        // Failed
+        MessageBox("Error", loo_Email.GetLastError())
+        RETURN FALSE
+    END IF
+    
+CATCH (RuntimeError re)
+    MessageBox("Error", re.GetMessage())
+    RETURN FALSE
+FINALLY
+    DESTROY loo_Email
+END TRY
+
+end function
+
+
+// Usage examples:
+boolean lb_Success
+
+// Simple email
+lb_Success = f_send_email_universal("user@test.com", "", "", "Hi", "Body text", "")
+
+// With CC and attachment
+lb_Success = f_send_email_universal( &
+    "to@test.com", &
+    "cc@test.com", &
+    "", &
+    "Subject", &
+    "Body", &
+    "C:\file.pdf")
+
+// Multiple everything
+lb_Success = f_send_email_universal( &
+    "to1@test.com;to2@test.com", &
+    "cc1@test.com;cc2@test.com", &
+    "bcc@test.com", &
+    "Subject", &
+    "<h1>HTML Body</h1>", &
+    "C:\file1.pdf;C:\file2.xlsx")
+
+
+KEY FEATURES
+------------
+
+✓ ONE method does everything
+✓ Auto-detects HTML vs Plain Text
+✓ Multiple TO recipients (semicolon-separated)
+✓ Multiple CC recipients (semicolon-separated)
+✓ Multiple BCC recipients (semicolon-separated)
+✓ Multiple attachments (semicolon-separated file paths)
+✓ Use empty string "" for optional fields
+✓ Automatic plain text fallback for HTML emails
+✓ Full logging to temp file
+✓ Simple return value: 1=Success, 0=Failed
+
+
+SEPARATOR OPTIONS
+-----------------
+You can use either semicolon (;) or comma (,) as separators:
+
+Valid:
+"email1@test.com;email2@test.com"
+"email1@test.com,email2@test.com"
+"file1.pdf;file2.xlsx"
+"file1.pdf,file2.xlsx"
+
+
+VIEWING LOGS
+------------
+
+// Get log file path
+string ls_LogPath
+ls_LogPath = loo_Email.GetLogFilePath()
+Run("notepad.exe " + ls_LogPath)
+
+// Get log as string
+string ls_Log
+ls_Log = loo_Email.GetDetailedLog()
+MessageBox("Log", ls_Log)
+
+// Get last error only
+string ls_Error
+ls_Error = loo_Email.GetLastError()
+MessageBox("Error", ls_Error)
+
+
+DEPLOYMENT OPTIONS
+------------------
+
+You have TWO options for deploying to client systems:
+
+OPTION 1: Copy All DLL Files (RECOMMENDED - EASIER)
+----------------------------------------------------
+1. Copy the ENTIRE "bin\Debug\net48" folder to client system
+   Example: Copy to C:\PBNetLibrary\
+
+   Files included:
+   - PBNetLibrary.dll (your main DLL)
+   - MailKit.dll
+   - MimeKit.dll
+   - BouncyCastle.Cryptography.dll
+   - QRCoder.dll
+   - System.*.dll (various system libraries)
+
+2. Register ONLY the main DLL:
+   cd C:\PBNetLibrary
+   C:\Windows\Microsoft.NET\Framework\v4.0.30319\RegAsm.exe PBNetLibrary.dll /codebase /tlb
+
+3. All dependency DLLs must be in the SAME folder as PBNetLibrary.dll
+
+IMPORTANT: Use /codebase flag so RegAsm knows where to find the DLL and its dependencies!
+
+
+OPTION 2: Merge Into Single DLL (Advanced)
+-------------------------------------------
+If you want a single DLL file, use ILMerge or Costura.Fody to merge all dependencies.
+This is more complex but provides a single file for easier distribution.
+
+
+REGISTRATION COMMANDS
+---------------------
+
+For 32-bit PowerBuilder (use Framework, not Framework64):
+C:\Windows\Microsoft.NET\Framework\v4.0.30319\RegAsm.exe PBNetLibrary.dll /codebase /tlb
+
+For 64-bit PowerBuilder:
+C:\Windows\Microsoft.NET\Framework64\v4.0.30319\RegAsm.exe PBNetLibrary.dll /codebase /tlb
+
+To unregister:
+RegAsm.exe PBNetLibrary.dll /unregister
+
+
+VERIFICATION
+------------
+After registration, check Windows Registry:
+HKEY_CLASSES_ROOT\PBNetLibrary.SendEmail
+
+You should see the registered COM class.
+
+
+MIGRATION FROM OLD METHODS
+---------------------------
+
+The Send() method is the ONLY method you need now!
+
+Examples:
+// Simple email
+Send(server, port, user, pass, name, email, "to@test.com", "", "", subject, body, "")
+
+// With CC
+Send(server, port, user, pass, name, email, "to@test.com", "cc@test.com", "", subject, body, "")
+
+// With attachments
+Send(server, port, user, pass, name, email, "to@test.com", "", "", subject, body, "C:\file.pdf")
+
+// Multiple TO, CC, BCC, and attachments
+Send(server, port, user, pass, name, email, 
+     "to1@test.com;to2@test.com", 
+     "cc1@test.com;cc2@test.com", 
+     "bcc@test.com",
+     subject, body, 
+     "C:\file1.pdf;C:\file2.xlsx")
+
+
+SMTP SETTINGS
+-------------
+
+Gmail:
+smtp.gmail.com, port 587
+Use App Password (not regular password)
+
+Outlook/Office 365:
+smtp.office365.com, port 587
+
+Yahoo:
+smtp.mail.yahoo.com, port 587
+
+
+RETURN VALUES
+-------------
+1 = Success
+0 = Failed
+
+Always check the return value!
+Use GetLastError() or GetDetailedLog() for error details.
